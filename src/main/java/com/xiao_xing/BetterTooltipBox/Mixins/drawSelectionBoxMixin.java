@@ -1,5 +1,6 @@
 package com.xiao_xing.BetterTooltipBox.Mixins;
 
+import static com.xiao_xing.BetterTooltipBox.Config.Color_SelectionBox;
 import static com.xiao_xing.BetterTooltipBox.Config.Enable_SelectionBox;
 
 import net.minecraft.client.renderer.RenderGlobal;
@@ -12,6 +13,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(RenderGlobal.class)
 public class drawSelectionBoxMixin {
 
+    private static String hex = Color_SelectionBox;
+
+    private static int colorHex = Integer.decode(hex);
+
     @Redirect(
         method = "drawSelectionBox",
         at = @At(
@@ -19,11 +24,7 @@ public class drawSelectionBoxMixin {
             target = "Lnet/minecraft/client/renderer/RenderGlobal;drawOutlinedBoundingBox(Lnet/minecraft/util/AxisAlignedBB;I)V"))
     public void drawOutlinedBoundingBox(AxisAlignedBB p_147590_0_, int p_147590_1_) {
         if (Enable_SelectionBox) {
-            float time = (System.currentTimeMillis() % 5000L) / 5000.0f * (float) (2 * Math.PI);
-            int color = (int) ((Math.sin(time) * 0.5f + 0.5f) * 255) << 16
-                | (int) ((Math.cos(time) * 0.5f + 0.5f) * 255) << 8
-                | 128;
-            RenderGlobal.drawOutlinedBoundingBox(p_147590_0_, color);
+            RenderGlobal.drawOutlinedBoundingBox(p_147590_0_, colorHex);
         }
         RenderGlobal.drawOutlinedBoundingBox(p_147590_0_, p_147590_1_);
     }

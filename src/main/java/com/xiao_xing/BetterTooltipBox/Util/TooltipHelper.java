@@ -1,9 +1,14 @@
 package com.xiao_xing.BetterTooltipBox.Util;
 
 import static com.xiao_xing.BetterTooltipBox.BetterTooltipBox.ResourceID;
+import static com.xiao_xing.BetterTooltipBox.Config.Color_Background;
+
+import java.awt.*;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -11,6 +16,12 @@ import org.lwjgl.opengl.GL11;
 public class TooltipHelper {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+
+    private cpw.mods.fml.common.registry.RegistryDelegate<Item> delegate;
+
+    private static String hex = Color_Background;
+
+    private static int colorHex = Integer.decode(hex);
 
     private static final ResourceLocation TEXTURE_TOOLTIP = new ResourceLocation(ResourceID + "gui/Tooltip.png");
 
@@ -27,6 +38,7 @@ public class TooltipHelper {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         // 绘制背景
         renderBackground(tessellator, x, y, width, height);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
         // 绘制四个角
         renderBorder(x, y, width, height);
@@ -36,13 +48,8 @@ public class TooltipHelper {
     }
 
     private static void renderBackground(Tessellator tessellator, int x, int y, int width, int height) {
-        mc.getTextureManager()
-            .bindTexture(TEXTURE_TOOLTIP_BACKGROUND);
-
-        float texWidth = 64.0f; // 纹理的实际宽度
-        float texHeight = 64.0f; // 纹理的实际高度
-
-        renderQuad(tessellator, x, y, width, height, 0, 0, 64, 64, texWidth, texHeight);
+        Color bg = new Color(colorHex);
+        drawRect(x, y, width, height, bg);
     }
 
     private static void renderBorder(int x, int y, int width, int height) {
@@ -106,5 +113,22 @@ public class TooltipHelper {
         tessellator.addVertexWithUV(x + width, y + height, z, uMax, vMax);
         tessellator.addVertexWithUV(x + width, y, z, uMax, vMin);
         tessellator.draw();
+    }
+
+    private static void drawRect(double left, double top, double width, double height, Color color) {
+        Tessellator tessellator = Tessellator.instance;
+
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+        GL11.glColor4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+        tessellator.startDrawingQuads();
+        tessellator.addVertex(left, top + height, 0.0D);
+        tessellator.addVertex(left + width, top + height, 0.0D);
+        tessellator.addVertex(left + width, top, 0.0D);
+        tessellator.addVertex(left, top, 0.0D);
+        tessellator.draw();
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }

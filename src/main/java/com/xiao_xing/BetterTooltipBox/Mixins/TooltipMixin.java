@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -45,9 +46,11 @@ public class TooltipMixin extends Gui {
             TooltipOverlayHandler.toolTipY = k2;
             TooltipOverlayHandler.toolTipW = k;
             TooltipOverlayHandler.toolTipH = i1;
-            String s1 = (String) textLines.get(i2);
-            font.drawStringWithShadow(s1, j2, k2, -1);
 
+            String s1 = (String) textLines.get(i2);
+            s1 = EnumChatFormatting.getTextWithoutFormattingCodes(s1);
+            s1 = EnumChatFormatting.GREEN + s1;
+            font.drawString(s1, j2, k2, -1);
             if (i2 == 0) {
                 k2 += 2;
             }
